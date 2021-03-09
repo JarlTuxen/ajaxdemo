@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Greetings</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+    <div>
+        <div>
+            <div>
+                <input id="id" placeholder="id">
+            </div>
+            <div>
+                <input id="content" placeholder="content">
+            </div>
+        </div>
+        <button id="get">Get</button>
+        <button id="post">Post</button>
+        <button id="ajaxGet">Ajax Get</button>
+        <button id="ajaxPost">Ajax Post</button>
+    </div>
+    <div id="status"></div>
+<script>
+    //alert("script");
+    $(document).ready(function (){
+        $("#get").click(function(){
+            //alert("get: " + $("#id").val());
+            let endpoint = "http://localhost:8080/greetings"; // + $("#id").val();
+
+            $.get(endpoint,
+                    function (data, status){
+                    //alert("data: " + data.id + data.content + "\nstatus: " + status);
+                    $("#id").val(data.id);
+                    $("#content").val(data.content);
+            });
+
+        });
+
+        //Post virker ikke pga. forkert content-type, som gives til underliggende Ajax - brug i stedet Ajax
+        $("#post").click(function(){
+            //alert("post: " + $("#id").val());
+            let greeting = {
+                id : 27,
+                content : "jquery ajax"
+            };
+            greeting.id = $("#id").val();
+            greeting.content = $("#content").val();
+            let jsondata = JSON.stringify(greeting);
+            let endpoint = "http://localhost:8080/greetings";
+
+            //alert(endpoint + "\nid: " + greeting.id + "\ncontent: " + greeting.content);
+            $.post(endpoint,
+                jsondata,
+                function (data, status){
+                    //alert("data: " + data + "\nstatus: " + status);
+                    $("#id").val(data.id);
+                    $("#content").val(data.content);
+            }).fail(function(jqxhr, settings, ex) { $("#status").append(settings + " : " + ex); });
+        });
+
+        $("#ajaxGet").click(function(){
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/greetings",
+                success: function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        //alert("success");
+                        $("#id").val(responseTxt.id);
+                        $("#content").val(responseTxt.content);
+                    }
+                    if (statusTxt == "error")
+                        $("#status").append("Error: " + xhr.status + ": " + xhr.statusText);
+                },
+                error: function(jqXhr, textStatus, errorMessage){
+                    $("#status").append(textStatus + " : " + errorMessage);
+                }
+            });
+        });
+
+        $("#ajaxPost").click(function(){
+            let greeting = {
+                id : 27,
+                content : "jquery ajax"
+            };
+            greeting.id = $("#id").val();
+            greeting.content = $("#content").val();
+            let jsondata = JSON.stringify(greeting);
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/greetings",
+                data: jsondata,
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                success: function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        $("#id").val(responseTxt.id);
+                        $("#content").val(responseTxt.content);
+                    }
+                    if (statusTxt == "error")
+                        $("#status").append("Error: " + xhr.status + ": " + xhr.statusText);
+                },
+                error: function(jqXhr, textStatus, errorMessage){
+                    $("#status").append(textStatus + " : " + errorMessage);
+                }
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Openweather</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+<h1>Weather forecast from openweather</h1>
+<div>Weather forecast</div>
+<button>Update Weather Forecast</button>
+<!-- http://api.openweathermap.org/data/2.5/weather?zip=2000,dk&APPID=534cccd6bd0fcc47969301589853dbc8 -->
+<script>
+    $(document).ready(function(){
+        $("button").click(function(){
+            $.ajax({
+                type: "GET",
+                dataType: "jsonp",
+                url: "https://api.openweathermap.org/data/2.5/weather?zip=2000,dk&units=metric&APPID=534cccd6bd0fcc47969301589853dbc8",
+                success: function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        //alert("External content loaded successfully!");
+
+                        //alert(responseTxt.name + ":" + responseTxt.weather[0].description);
+                        $("div").html("By: " + responseTxt.name
+                            + "<br> Vejr: " + "" + responseTxt.weather[0].description
+                            + "<br> Temp: " + responseTxt.main.temp
+                            + "<br> Vind: " + responseTxt.wind.speed
+                            + "<br> Retning: " + responseTxt.wind.deg);
+
+                    }
+                    if (statusTxt == "error")
+                        alert("Error: " + xhr.status + ": " + xhr.statusText);
+                }
+            });
+        });
+    });
+
+</script>
+</body>
+</html>
