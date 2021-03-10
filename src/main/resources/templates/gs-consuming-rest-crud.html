@@ -23,10 +23,10 @@
     <div id="status"></div>
 <script>
     //alert("script");
-    $(document).ready(function (){
+    $(document).ready(function(){
         $("#get").click(function(){
             //alert("get: " + $("#id").val());
-            let endpoint = "http://localhost:8080/greetings"; // + $("#id").val();
+            let endpoint = "http://localhost:8080/greetings"; // + "/" + $("#id").val();
 
             $.get(endpoint,
                     function (data, status){
